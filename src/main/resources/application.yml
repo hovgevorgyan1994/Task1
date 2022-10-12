@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    username: postgres
+    password: root
+    url: jdbc:postgresql://localhost:5432/task1?currentSchema=task1
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          batch_size: 40
+  batch:
+    jdbc:
+      initialize-schema: ALWAYS
+    job:
+      enabled: false
+
+files:
+  path: classpath:files/employees*.csv
