@@ -20,4 +20,4 @@ spring:
       enabled: false
 
 files:
-  path: classpath:files/employees*.csv
+  path: classpath:files/part*.csv

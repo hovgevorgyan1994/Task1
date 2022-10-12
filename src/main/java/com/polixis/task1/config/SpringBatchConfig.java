@@ -3,7 +3,6 @@ package com.polixis.task1.config;
 import static com.polixis.task1.config.properties.SpringBatchConfigProperties.*;
 import static org.springframework.batch.item.file.transform.DelimitedLineTokenizer.DELIMITER_COMMA;
 
-import com.polixis.task1.dto.CreateEmployeeDto;
 import com.polixis.task1.entity.Employee;
 import com.polixis.task1.processor.EmployeeProcessor;
 import com.polixis.task1.repository.EmployeeRepository;
@@ -13,7 +12,6 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.LineMapper;
@@ -38,21 +36,22 @@ public class SpringBatchConfig {
 
   @Value("${files.path}")
   private Resource[] resources;
+
   private final EmployeeRepository infoRepository;
   private final JobBuilderFactory jobBuilderFactory;
   private final StepBuilderFactory stepBuilderFactory;
 
   @Bean
-  public MultiResourceItemReader<CreateEmployeeDto> multiResourceItemReader() {
-    MultiResourceItemReader<CreateEmployeeDto> resourceItemReader = new MultiResourceItemReader<>();
+  public MultiResourceItemReader<Employee> multiResourceItemReader() {
+    MultiResourceItemReader<Employee> resourceItemReader = new MultiResourceItemReader<>();
     resourceItemReader.setDelegate(reader());
     resourceItemReader.setResources(resources);
     return resourceItemReader;
   }
 
   @Bean
-  public FlatFileItemReader<CreateEmployeeDto> reader() {
-    FlatFileItemReader<CreateEmployeeDto> reader = new FlatFileItemReader<>();
+  public FlatFileItemReader<Employee> reader() {
+    FlatFileItemReader<Employee> reader = new FlatFileItemReader<>();
     reader.setLineMapper(lineMapper());
     return reader;
   }
@@ -74,7 +73,7 @@ public class SpringBatchConfig {
   public Step processDataFromCsv() {
     return stepBuilderFactory
         .get(PROCESS_DATA)
-        .<CreateEmployeeDto, Employee>chunk(CHUNK_SIZE)
+        .<Employee, Employee>chunk(CHUNK_SIZE)
         .reader(multiResourceItemReader())
         .processor(processor())
         .writer(writer())
@@ -94,16 +93,16 @@ public class SpringBatchConfig {
     return asyncTaskExecutor;
   }
 
-  private LineMapper<CreateEmployeeDto> lineMapper() {
-    DefaultLineMapper<CreateEmployeeDto> lineMapper = new DefaultLineMapper<>();
+  private LineMapper<Employee> lineMapper() {
+    DefaultLineMapper<Employee> lineMapper = new DefaultLineMapper<>();
 
     DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
     delimitedLineTokenizer.setStrict(false);
     delimitedLineTokenizer.setNames(HEADERS);
     delimitedLineTokenizer.setDelimiter(DELIMITER_COMMA);
 
-    BeanWrapperFieldSetMapper<CreateEmployeeDto> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
-    fieldSetMapper.setTargetType(CreateEmployeeDto.class);
+    BeanWrapperFieldSetMapper<Employee> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
+    fieldSetMapper.setTargetType(Employee.class);
 
     lineMapper.setLineTokenizer(delimitedLineTokenizer);
     lineMapper.setFieldSetMapper(fieldSetMapper);

@@ -13,5 +13,5 @@ public class SpringBatchConfigProperties {
   public final String PROCESS_DATA = "process-data";
   public final String JOB = "write-employees";
   public final int CONCURRENCY_LIMIT = 20;
-  public final int CHUNK_SIZE = 250;
+  public final int CHUNK_SIZE = 100;
 }
